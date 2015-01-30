@@ -1,0 +1,34 @@
+[
+  {
+    "vendor": "viettel",
+    "packageName": "VT100",
+    "actionType": "register",
+    "smsFee": "100",
+    "customNumber": "",
+    "messageContent": "vt100"
+  },
+  {
+    "vendor": "viettel",
+    "packageName": "VT100",
+    "actionType": "cancel",
+    "smsFee": "100",
+    "customNumber": "",
+    "messageContent": "vt100"
+  },
+  {
+    "vendor": "viettel",
+    "packageName": "VT100",
+    "actionType": "check",
+    "smsFee": "100",
+    "customNumber": "",
+    "messageContent": "vt100"
+  },
+  {
+    "vendor": "viettel",
+    "packageName": "VT100",
+    "actionType": "tutorial",
+    "smsFee": "100",
+    "customNumber": "",
+    "messageContent": "vt100"
+  }
+]

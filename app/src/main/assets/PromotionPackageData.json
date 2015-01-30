@@ -3,11 +3,7 @@
     "vendor":"viettel",
     "packageName":"VT100",
     "description":"Gói cước Sinh Viên: 200đ/phút gọi nội mạng, 200 SMS nội mạng trong ngày",
-    "fee":"100 vnđ",
-    "phoneNumber":"109",
-    "checkContent":"kt100",
-    "registerContent":"vt100",
-    "cancelContent":"huyvt",
-    "tutorialContent":"hd100"
+    "packageFee":"2500",
+    "phoneNumber":"109"
   }
 ]

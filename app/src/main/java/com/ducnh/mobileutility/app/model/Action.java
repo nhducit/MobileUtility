@@ -10,12 +10,12 @@ public class Action extends RealmObject {
     private String vendor;
     private String packageName;
     private String actionType;
-    private String smsFee;
-    private String packageFee;
+    private int smsFee;
     private String customNumber;
     private String messageContent;
 
     //<editor-fold desc="getter and setter">
+
     public String getVendor() {
         return vendor;
     }
@@ -40,20 +40,12 @@ public class Action extends RealmObject {
         this.actionType = actionType;
     }
 
-    public String getSmsFee() {
+    public int getSmsFee() {
         return smsFee;
     }
 
-    public void setSmsFee(String smsFee) {
+    public void setSmsFee(int smsFee) {
         this.smsFee = smsFee;
-    }
-
-    public String getPackageFee() {
-        return packageFee;
-    }
-
-    public void setPackageFee(String packageFee) {
-        this.packageFee = packageFee;
     }
 
     public String getCustomNumber() {
@@ -71,5 +63,6 @@ public class Action extends RealmObject {
     public void setMessageContent(String messageContent) {
         this.messageContent = messageContent;
     }
+
     //</editor-fold>
 }

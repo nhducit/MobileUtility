@@ -2,44 +2,79 @@ package com.ducnh.mobileutility.app;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import com.ducnh.mobileutility.app.model.Action;
 import com.ducnh.mobileutility.app.model.PromotionPackage;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 
 public class MainActivity extends ActionBarActivity {
+    
+    private String LOG_TAG = "MobileUtility";
+    
+    
+    private String VENDOR = "vendor";
+    private String PACKAGE_NAME = "packageName";
+    private String ACTION_TYPE = "actionType";
+    private String SMS_FEE = "smsFee";
+    private String PACKAGE_FEE = "packageFee";
+    private String CUSTOM_NUMBER = "customNumber";
+    private String MESSAGE_CONTENT = "messageContent";
 
-    String VENDOR = "vendor";
-    String PACKAGE_NAME = "packageName";
-    String ACTION_TYPE = "actionType";
-    String SMS_FEE = "smsFee";
-    String PACKAGE_FEE = "packageFee";
-    String CUSTOM_NUMBER = "customNumber";
-    String MESSAGE_CONTENT = "messageContent";
+    //
 
+    private Realm realm;
+
+    //
+    Button testButton;
+    TextView textView;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //String dbPath = copyBundledRealmFile(this.getResources().openRawResource(R.))
+        try {
+            //TODO: remove deleteRealmFile when publish this application
+            Realm.deleteRealmFile(this);
+            realm = Realm.getInstance(this);
+
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "Can not get instance of Realm, need migration");
+            e.printStackTrace();
+        }
         initialDatabase();
+        testButton = (Button) findViewById(R.id.testButton);
+        textView = (TextView) findViewById(R.id.packageTextVIew);
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                printAllPackage(textView);
+            }
+        });    
     }
 
+
+    
 
     public void initialDatabase() {
         initialActionData();
         initialPackageData();
-        packageActionLinker();
-        printAllPackage();
+        //packageActionLinker();
     }
 
     public void initialPackageData() {
-        Realm realm = Realm.getInstance(this);
         realm.beginTransaction();
         try {
             InputStream inputStream = getAssets().open("PromotionPackageData.json");
@@ -52,7 +87,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void initialActionData() {
-        Realm realm = Realm.getInstance(this);
         realm.beginTransaction();
         try {
             InputStream inputStream = getAssets().open("ActionData.json");
@@ -64,32 +98,37 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void packageActionLinker() {
-        Realm realm = Realm.getInstance(this);
-        realm.beginTransaction();
+//    public void packageActionLinker() {
+//        realm.beginTransaction();
+//        RealmResults<PromotionPackage> promotionPackages = realm.where(PromotionPackage.class).findAll();
+//
+//
+//        for (int i = 0; i < promotionPackages.size(); i++) {
+//            PromotionPackage promotionPackage = promotionPackages.get(i);
+//            RealmResults<Action> actions = realm.where(Action.class)
+//                    .equalTo(VENDOR, promotionPackage.getVendor(), false)
+//                    .equalTo(PACKAGE_NAME, promotionPackage.getPackageName(), false)
+//                    .findAll();
+//
+//            for (int j = 0; j < actions.size(); j++) {
+//                Action action = actions.get(j);
+//                promotionPackage.getActions().add(action);
+//            }
+//            //promotionPackage.getActions().addAll(actions);
+//
+//        }
+//
+//        realm.commitTransaction();
+//    }
+
+    public void printAllPackage(TextView textView) {
         RealmResults<PromotionPackage> promotionPackages = realm.where(PromotionPackage.class).findAll();
         for (PromotionPackage promotionPackage : promotionPackages) {
-            RealmResults<Action> actions = realm.where(Action.class)
-                    .equalTo(VENDOR, promotionPackage.getVendor())
-                    .equalTo(PACKAGE_NAME, promotionPackage.getVendor())
-                    .findAll();
-
-            promotionPackage.getActions().addAll(actions);
+            textView.setText(textView.getText() + promotionPackage.toString());
+            Log.i("MU---" , promotionPackage.toString());
         }
-        realm.commitTransaction();
     }
-
-    public void printAllPackage() {
-        Realm realm = Realm.getInstance(this);
-        realm.beginTransaction();
-        RealmResults<PromotionPackage> promotionPackages = realm.where(PromotionPackage.class).findAll();
-
-        for (PromotionPackage promotionPackage : promotionPackages) {
-            System.out.println(promotionPackage.toString());
-        }
-        realm.commitTransaction();
-    }
-
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,5 +150,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 }

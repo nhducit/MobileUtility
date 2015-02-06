@@ -12,8 +12,6 @@ public class PromotionPackage extends RealmObject {
     private String description;
     private String phoneNumber;
     private int packageFee;
-    private RealmList<Action> actions;
-
 
     //<editor-fold desc="getter and setter">
 
@@ -55,14 +53,6 @@ public class PromotionPackage extends RealmObject {
 
     public void setPackageFee(int packageFee) {
         this.packageFee = packageFee;
-    }
-
-    public RealmList<Action> getActions() {
-        return actions;
-    }
-
-    public void setActions(RealmList<Action> actions) {
-        this.actions = actions;
     }
 
 //</editor-fold>

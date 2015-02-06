@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.ducnh.mobileutility.app.logic.ActionInvocation;
 import com.ducnh.mobileutility.app.model.Action;
 import com.ducnh.mobileutility.app.model.PromotionPackage;
 import io.realm.Realm;
@@ -60,7 +62,8 @@ public class MainActivity extends ActionBarActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                printAllPackage(textView);
+                textView.setText("");
+                //printAllPackage(textView);
             }
         });    
     }
@@ -125,6 +128,13 @@ public class MainActivity extends ActionBarActivity {
         RealmResults<PromotionPackage> promotionPackages = realm.where(PromotionPackage.class).findAll();
         for (PromotionPackage promotionPackage : promotionPackages) {
             textView.setText(textView.getText() + promotionPackage.toString());
+            ActionInvocation actionInvocation = new ActionInvocation(promotionPackage, realm);
+            boolean actionResult = true; //actionInvocation.register();
+            if(actionResult){
+                Toast.makeText(getApplicationContext(), "Register successfully", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(getApplicationContext(), "Register Failed", Toast.LENGTH_LONG).show();
+            }
             Log.i("MU---" , promotionPackage.toString());
         }
     }

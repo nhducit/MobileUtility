@@ -8,24 +8,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.ducnh.mobileutility.app.logic.ActionInvocation;
+import com.ducnh.mobileutility.app.logic.ActionFactory;
+import com.ducnh.mobileutility.app.logic.ActionPrototype;
 import com.ducnh.mobileutility.app.model.Action;
 import com.ducnh.mobileutility.app.model.PromotionPackage;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 
 public class MainActivity extends ActionBarActivity {
-    
-    private String LOG_TAG = "MobileUtility";
-    
-    
+
+
     private String VENDOR = "vendor";
     private String PACKAGE_NAME = "packageName";
     private String ACTION_TYPE = "actionType";
@@ -33,15 +29,15 @@ public class MainActivity extends ActionBarActivity {
     private String PACKAGE_FEE = "packageFee";
     private String CUSTOM_NUMBER = "customNumber";
     private String MESSAGE_CONTENT = "messageContent";
-
+    private ActionFactory actionFactory = new ActionFactory();
     //
 
     private Realm realm;
 
     //
-    Button testButton;
-    TextView textView;
-    
+    Button registerButton;
+    Button cancelButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,25 +47,33 @@ public class MainActivity extends ActionBarActivity {
             //TODO: remove deleteRealmFile when publish this application
             Realm.deleteRealmFile(this);
             realm = Realm.getInstance(this);
-
         } catch (Exception e) {
-            Log.i(LOG_TAG, "Can not get instance of Realm, need migration");
+            Log.i(Constant.LOG_TAG, "Can not get instance of Realm, need migration");
             e.printStackTrace();
         }
         initialDatabase();
-        testButton = (Button) findViewById(R.id.testButton);
-        textView = (TextView) findViewById(R.id.packageTextVIew);
-        testButton.setOnClickListener(new View.OnClickListener() {
+        registerButton = (Button) findViewById(R.id.registerButton);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textView.setText("");
-                //printAllPackage(textView);
+                PromotionPackage promotionPackage = realm.where(PromotionPackage.class).equalTo(Constant
+                        .PACKAGE_NAME, "vt100", false).findFirst();
+                ActionPrototype registerVt100 = actionFactory.getActionPrototype(promotionPackage, Constant.REGISTER);
+                registerVt100.doAction();
             }
-        });    
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PromotionPackage promotionPackage = realm.where(PromotionPackage.class).equalTo(Constant
+                        .PACKAGE_NAME, "vt100", false).findFirst();
+                ActionPrototype cancelVt100 = actionFactory.getActionPrototype(promotionPackage, Constant.CANCEL);
+                cancelVt100.doAction();
+            }
+        });
     }
 
-
-    
 
     public void initialDatabase() {
         initialActionData();
@@ -128,17 +132,17 @@ public class MainActivity extends ActionBarActivity {
         RealmResults<PromotionPackage> promotionPackages = realm.where(PromotionPackage.class).findAll();
         for (PromotionPackage promotionPackage : promotionPackages) {
             textView.setText(textView.getText() + promotionPackage.toString());
-            ActionInvocation actionInvocation = new ActionInvocation(promotionPackage, realm);
-            boolean actionResult = true; //actionInvocation.register();
-            if(actionResult){
-                Toast.makeText(getApplicationContext(), "Register successfully", Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(getApplicationContext(), "Register Failed", Toast.LENGTH_LONG).show();
-            }
-            Log.i("MU---" , promotionPackage.toString());
+            //ActionInvocation actionInvocation = new ActionInvocation(promotionPackage, realm);
+            //boolean actionResult = actionInvocation.register();
+//            if(actionResult){
+//                Toast.makeText(getApplicationContext(), "Register successfully!", Toast.LENGTH_LONG).show();
+//            }else{
+//                Toast.makeText(getApplicationContext(), "Register Failed!", Toast.LENGTH_LONG).show();
+//            }
+            Log.i("MU---", promotionPackage.toString());
         }
     }
-    
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

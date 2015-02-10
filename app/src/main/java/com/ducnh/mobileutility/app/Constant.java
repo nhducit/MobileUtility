@@ -12,4 +12,8 @@ public class Constant {
     public static String PACKAGE_FEE = "packageFee";
     public static String CUSTOM_NUMBER = "customNumber";
     public static String MESSAGE_CONTENT = "messageContent";
+    public static String REGISTER = "register";
+    public static String CANCEL = "cancel";
+    public static String CHECK = "check";
+    public static String TUTORIAL = "tutorial";
 }
